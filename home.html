@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна сторінка</title>
+    <link rel="stylesheet" href="stylesprofile.css"> <!-- Додаємо цей рядок -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="logo">FluffyBall</div>
+    </header>
+
+    <nav class="top-navigation">
+        <a href="#" class="active">Головна</a>
+        
+        <input type="text" class="search-bar" placeholder="Пошук">
+        <a href="profile.html">Мій кабінет</a>
+    </nav>
+
+    <div class="main-container">
+        <div class="content-container">
+            
+
+            <div class="artwork-grid">
+                <!-- Тут будуть вставлені творчі роботи -->
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn" onclick="changePage(-1)" disabled>&#9664; Назад</button>
+                <button class="pagination-btn" onclick="changePage(1)">Вперед &#9654;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Додайте модальне вікно для відображення деталей про роботу -->
+    <div id="artworkModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="artworkDetails"></div>
+        </div>
+    </div>
+    
+
+<script>
+    
+   
+    $(document).ready(function () {
+            const artworksPerPage = 8; // Кількість творчих робіт на одній сторінці
+            let currentPage = 1;
+
+            // Функція для оновлення вмісту сторінки
+        function updatePageContent(allArtworks) {
+            // Вирахувати індекс початкової та кінцевої роботи для поточної сторінки
+            const startIndex = (currentPage - 1) * artworksPerPage;
+            const endIndex = startIndex + artworksPerPage;
+
+            // Вибрати творчі роботи для поточної сторінки
+            const artworksOnPage = allArtworks.slice(startIndex, endIndex);
+
+            // Очистити контейнер перед додаванням нового вмісту
+            $('.artwork-grid').empty();
+
+            // Додати кожну творчу роботу до контейнера
+            $.each(artworksOnPage, function (index, artwork) {
+                const artworkElement = createArtworkElement(artwork);
+
+                // Замість append() використовуємо prepend(), щоб додавати нові роботи перед іншими
+                $('.artwork-grid').prepend(artworkElement);
+            });
+        }
+
+            // Викликати маршрут для отримання всіх творчих робіт при завантаженні сторінки
+            $.get("http://localhost:8080/allArtworks", function (data) {
+                // Оновити вміст сторінки
+                updatePageContent(data.allArtworks);
+
+                // Визначити кількість всіх сторінок
+                const totalPages = Math.ceil(data.totalArtworks / artworksPerPage);
+
+                // Отримати кнопки пагінації
+                const prevButton = $('.pagination-btn').eq(0);
+                const nextButton = $('.pagination-btn').eq(1);
+
+                // Встановити атрибут disabled для кнопок, якщо більше сторінок немає
+                if (currentPage === 1) {
+                    prevButton.prop('disabled', true);
+                } else {
+                    prevButton.prop('disabled', false);
+                }
+
+                if (currentPage === totalPages) {
+                    nextButton.prop('disabled', true);
+                } else {
+                    nextButton.prop('disabled', false);
+                }
+            })
+                .fail(function (error) {
+                    console.error('Помилка при отриманні творчих робіт:', error);
+                });
+
+                // Оновлення функції createArtworkElement
+            function createArtworkElement(artwork) {
+                const artworkElement = $('<div>').addClass('artwork-item');
+
+                // Додайте обробник подій для відкриття деталей роботи
+                artworkElement.on('click', function () {
+                    openModal(artwork);
+                });
+
+            
+            // Додайте зображення (фото) до елемента
+            artworkElement.append($('<img>').attr('src', artwork.photo).attr('alt', artwork.title));
+
+            // Додайте назву до елемента
+            artworkElement.append($('<h3>').text(artwork.title));
+
+            // Додайте тип та ціну до елемента
+            if (artwork.is_auction_item) {
+                artworkElement.append($('<p>').text('Тип: Аукціон'));
+                if (artwork.auctionData && artwork.auctionData.current_price !== undefined) {
+                    artworkElement.append($('<p>').text('Поточна ціна: ' + artwork.auctionData.current_price));
+                } else {
+                    artworkElement.append($('<p>').text('Поточна ціна: Невідомо'));
+                }
+            } else if (artwork.is_for_sale) {
+                artworkElement.append($('<p>').text('Тип: Продаж'));
+                if (artwork.saleData && artwork.saleData.price !== undefined) {
+                    artworkElement.append($('<p>').text('Ціна: ' + artwork.saleData.price));
+                } else {
+                    artworkElement.append($('<p>').text('Ціна: Невідомо'));
+                }
+            } else {
+                artworkElement.append($('<p>').text('Тип: Портфоліо'));
+                artworkElement.append($('<p>').text('Ціна: Не продається'));
+            }
+
+            
+
+            return artworkElement;
+        }
+       
+        /// Нова функція для відкриття модального вікна з деталями роботи
+        window.openModal = function (artwork) {
+            const modal = $('#artworkModal');
+            const artworkDetailsContainer = $('#artworkDetails');
+
+            // Очистити попередні дані
+            artworkDetailsContainer.empty();
+
+
+                // Додати інформацію про роботу в контейнер
+                artworkDetailsContainer.append($('<h2>').text(artwork.title));
+                artworkDetailsContainer.append($('<img>').attr('src', artwork.photo).attr('alt', artwork.title));
+                artworkDetailsContainer.append($('<p>').text('Опис: ' + artwork.description));
+                artworkDetailsContainer.append($('<p>').text('Категорія: ' + artwork.category));
+                artworkDetailsContainer.append($('<p>').text('Жанр: ' + artwork.genre));
+
+                    if (artwork.is_auction_item) {
+                    artworkDetailsContainer.append($('<p>').text('Тип: Аукціон'));
+                    artworkDetailsContainer.append($('<p>').text('Початкова ціна: ' + artwork.auctionData.start_price));
+                    artworkDetailsContainer.append($('<p>').text('Максимальна ціна: ' + artwork.auctionData.end_price));
+                        artworkDetailsContainer.append($('<p>').text('id: ' + artwork.auctionData.auction_id));
+                    artworkDetailsContainer.append($('<p>').text('Поточна ціна: ' + artwork.auctionData.current_price));
+                    artworkDetailsContainer.append($('<p>').text('Ціна за ставку: ' + artwork.auctionData.bid_increment));
+                  
+ //  кнопка "зробити ставку" 
+ const bidButton = $('<button>').text('Зробити ставку');
+                bidButton.on('click', function () {
+                    // Передати auction_id та bid_price на сервер при кліці на кнопку
+                    makeBid(artwork.auctionData.auction_id, artwork.auctionData.bid_increment);
+                });
+                artworkDetailsContainer.append(bidButton);;
+
+
+            } else if (artwork.is_for_sale) {
+                artworkDetailsContainer.append($('<p>').text('Тип: Продаж'));
+                if (artwork.saleData && artwork.saleData.price !== undefined) {
+                    artworkDetailsContainer.append($('<p>').text('Ціна: ' + artwork.saleData.price));
+                } else {
+                    artworkDetailsContainer.append($('<p>').text('Ціна: Невідомо'));
+                }
+            } else {
+                artworkDetailsContainer.append($('<p>').text('Тип: Портфоліо'));
+                artworkDetailsContainer.append($('<p>').text('Ціна: Не продається'));
+            }
+
+            // Показати модальне вікно
+            modal.css('display', 'block');
+        };
+
+            //  функція для закриття модального вікна
+            window.closeModal = function () {
+                const modal = $('#artworkModal');
+                modal.css('display', 'none');
+            };
+
+
+
+//  функція для зроблення ставки
+function makeBid(auctionId, bidAmount) {
+    console.log('bidAmount:', bidAmount);
+     // Переконайтеся, що bidAmount є дійсним числовим значенням
+     bidAmount = parseFloat(bidAmount);
+
+if (isNaN(bidAmount)) {
+    alert('Некоректна сума ставки');
+    return;
+}
+            // Викликати серверний маршрут для зроблення ставки
+            $.post('http://localhost:8080/makeBid', { auctionId: auctionId, bidAmount: bidAmount }, function (data) {
+                // Оновити інформацію про аукціон або виконати інші дії за потребою
+                if (data.success) {
+                    alert('Ставка прийнята!');
+                    // Оновити інформацію про аукціон (можливо, вивести нову ціну тощо)
+                    // ...
+                } else {
+                    alert('Помилка при зробленні ставки: ' + data.message);
+                }
+            });
+        }
+
+
+
+            // Функція для зміни поточної сторінки
+            window.changePage = function (change) {
+                currentPage += change;
+                if (currentPage < 1) {
+                    currentPage = 1;
+                }
+                // Викликати маршрут для отримання всіх творчих робіт для нової сторінки
+                $.get(`http://localhost:8080/allArtworks?page=${currentPage}`, function (data) {
+                    // Оновити вміст сторінки
+                    updatePageContent(data.allArtworks);
+
+                    // Визначити кількість всіх сторінок
+                    const totalPages = Math.ceil(data.totalArtworks / artworksPerPage);
+
+                    // Отримати кнопки пагінації
+                    const prevButton = $('.pagination-btn').eq(0);
+                    const nextButton = $('.pagination-btn').eq(1);
+
+                    // Встановити атрибут disabled для кнопок, якщо більше сторінок немає
+                    if (currentPage === 1) {
+                        prevButton.prop('disabled', true);
+                    } else {
+                        prevButton.prop('disabled', false);
+                    }
+
+                    if (currentPage === totalPages) {
+                        nextButton.prop('disabled', true);
+                    } else {
+                        nextButton.prop('disabled', false);
+                    }
+                })
+                    .fail(function (error) {
+                        console.error('Помилка при отриманні творчих робіт:', error);
+                    });
+            };
+        });
+
+
+
+       
+    
+</script>
+
+     
+
+</body>
+
+</html>

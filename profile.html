@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профіль</title>
+    <link rel="stylesheet" href="stylesprofile.css"> <!-- Додаємо цей рядок -->
+     <!-- Підключення бібліотеки jQuery -->
+     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+</head>
+<body>
+    <header>
+        <div class="logo">FluffyBall</div>
+       
+    </header>
+
+    <nav class="top-navigation">
+        <!-- Навігація по сайту -->
+        <a href="home.html">Головна</a>
+       
+        <input type="text" class="search-bar" placeholder="Пошук">
+        <a href="#" class="active">Мій кабінет</a>
+    </nav>
+
+    <div class="main-container">
+        <div class="profile-container">
+            <img id="profilePicture" src="" alt="Фото профіля" class="profile-picture">
+            <div class="profile-info">
+                <h2 id="username">Ім'я користувача</h2>
+                <p id="age">вік</p>
+                <p id="artStyle">art_style_description</p>
+                <p id="selfDescription">Опис про себе</p>
+            </div>
+        </div>
+    </div>
+    
+
+        <nav class="profile-navigation">
+            <div class="profile-tabs">
+                <div class="profile-tab my-works" onclick="showContent('myWorksContent')">Мої роботи</div>
+                <div class="profile-tab my-messages" onclick="showContent('myMessagesContent')">Мої повідомлення</div>
+                <div class="profile-tab settings" onclick="showContent('settingsContent')">Налаштування</div>
+                <button class="add-work-button" onclick="showAddWorkForm()">Додати нову роботу</button>
+            </div>
+        </nav>
+        
+
+     
+
+        <div class="profile-content" id="myWorksContent">
+            
+            <div id="myWorksList" class="artworks-list">
+                <!-- Заповнюється динамічно з JavaScript -->
+            </div>
+        </div>
+        <div id="modalOverlay" class="modal-overlay"></div>
+        <!-- Модальне вікно для відображення деталей роботи -->
+        <div class="modal" id="artworkModal">
+            
+            <div class="modal-content">
+                <span class="close-button" onclick="closeArtworkModal()">&#10006;</span>
+                <img id="modalImage" alt="Робота" />
+                <div class="modal-details">
+                    <h3 id="modalTitle"></h3>
+                    <p class="modal-details-item" id="modalGenre"></p>
+                    <p class="modal-details-item" id="modalCategory"></p>
+                    <p class="modal-details-item" id="modalSaleType"></p>
+                    <p id="artworkDescription" class="modal-details-item"></p>
+                    <!-- Додайте ці елементи в ваш HTML-код -->
+<div id="auctionDetails" style="display: none;"></div>
+<div id="saleDetails" style="display: none;"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        
+        <div class="profile-content" id="myMessagesContent">
+            <!-- Вміст вкладки "Мої повідомлення" -->
+            
+            <h2>Повідомлення</h2>
+            
+        </div>
+        
+        
+<div class="profile-content" id="settingsContent">
+    
+    <!-- налаштування -->
+    <button class="edit-button" onclick="showEditForm()">Редагувати профіль</button>
+    <button class="logout-button" onclick="logout()">Вийти</button>
+</div>
+
+
+        
+        
+
+    <!-- Вікно редагування -->
+    <div class="overlay" id="editOverlay">
+        <div class="edit-form">
+            <span class="close-button" onclick="cancelChanges()">&#10006;</span>
+            <h2>Форма редагування профілю</h2>
+            <label for="editPhoto">Змінити фото:</label>
+            <input type="file" id="editPhoto" accept="image/*"  placeholder="Змінити фото" onchange="displaySelectedPhoto()">
+            <img id="selectedPhotoPreview" alt="Вибрана фотографія" style="max-width: 300px; max-height: 300px; display: none;">
+
+            <label for="editUsername">Змінити ім'я користувача:</label>
+            <input type="text" id="editUsername" placeholder="Змінити ім'я користувача">
+
+            <label for="editAge">Вік (мінімум 12, максимум 99):</label>
+            <input type="number" id="editAge" min="12" max="99" placeholder="Вік">
+
+            <label for="editArtStyle">Оберіть ваші стилі мистецтва (максимум 3):</label>
+            <div id="editArtStyle" class="checkbox-group">
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Абстракціонізм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Реалізм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Сюрреалізм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Імпресіонізм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Поп-арт</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Модерн</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Кубізм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Фовізм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Супрематизм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Експресіонізм</label>
+                <label><input type="checkbox" onchange="updateStyleColor(this)"> Футуризм</label>
+                
+            </div>
+
+            <label for="selfDescription">Змінити опис про себе:</label>
+            <textarea id="Description" placeholder="Змінити опис про себе" cols="500" rows="8" maxlength="300" ></textarea>
+            <span id="DescriptionCount">Залишилося символів: 300</span>
+
+            
+
+
+           
+
+            <div class="button-group">
+                <button onclick="saveChanges()">Підтвердити зміни</button>
+                <button class="cancel-button" onclick="cancelChanges()">Скасувати зміни</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!--форми додавання нової роботи-->
+    <div class="overlay" id="addWorkOverlay">
+        <div class="edit-form">
+            <span class="close-button" onclick="cancelAddWork()">&#10006;</span>
+            <h2>Додати нову роботу</h2>
+            
+            <label for="workTitle">Назва роботи:</label>
+            <input type="text" id="workTitle" placeholder="Введіть назву роботи">
+    
+            <label for="workDescription">Опис роботи:</label>
+            <textarea id="workDescription" placeholder="Введіть опис роботи" cols="500" rows="8" maxlength="1500"></textarea>
+            <span id="workDescriptionCount">Залишилося символів: 1500</span>
+    
+            <label for="workPhoto">Фото роботи:</label>
+            <input type="file" id="workPhoto" accept="image/*" placeholder="Завантажте фото роботи">
+    
+            <label for="workCategory">Категорія роботи:</label>
+<div class="select-container">
+    <select id="workCategory" required>
+        <option value="Painting">Живопис</option>
+        <option value="Sculpture">Скульптура</option>
+        <option value="Photography">Фотографія</option>
+        <option value="Digital Art">Цифрове мистецтво</option>
+        <option value="Other">Інше</option>
+    </select>
+</div>
+
+<label for="workGenre">Жанр роботи:</label>
+<div class="select-container">
+    <select id="workGenre" required>
+        <option value="Abstract">Абстракція</option>
+        <option value="Realism">Реалізм</option>
+        <option value="Impressionism">Імпресіонізм</option>
+        <option value="Surrealism">Сюрреалізм</option>
+        <option value="Other">Інше</option>
+    </select>
+</div>
+            
+           
+            <div id="saletype">
+                <label>Виберіть тип продажу:</label>
+                <button onclick="toggleAuctionFields('auction'); setCurrentSaleType('auction')">Аукціон</button>
+                <button onclick="toggleAuctionFields('sale'); setCurrentSaleType('sale')">Продаж</button>
+                <button onclick="toggleAuctionFields('portfolio'); setCurrentSaleType('portfolio')">Портфоліо</button>
+            </div>
+            
+            
+
+<div id="auctionFields" style="display: none;">
+    <label for="startPrice">Початкова ціна:</label>
+    <input type="number" id="startPrice" placeholder="Початкова ціна">
+
+    <label for="maxPrice">Максимальна ціна:</label>
+    <input type="number" id="maxPrice" placeholder="Максимальна ціна">
+
+    <label for="bidPrice">Ціна ставки:</label>
+    <input type="number" id="bidPrice" placeholder="Ціна ставки">
+
+    <label for="auctionDuration">Термін аукціону:</label>
+<div class="select-container">
+    <select id="auctionDuration" required>
+        <option value="1">1 день</option>
+        <option value="2">2 дні</option>
+        <option value="3">3 дні</option>
+        <option value="5">5 дні</option>
+        <option value="7">7 дні</option>
+        <option value="10">10 дні</option>
+        <option value="14">14 днів</option>
+    </select>
+</div>
+
+</div>
+
+
+<div id="saleFields" style="display: none;">
+    <label for="salePrice">Ціна продажу:</label>
+    <input type="number" id="salePrice" placeholder="Ціна продажу">
+
+</div>
+
+    
+           
+<div class="button-group">
+    <button onclick="publishWork()">Опублікувати</button>
+    <button class="cancel-button" onclick="cancelAddWork()">Скасувати</button>
+</div>
+
+        </div>
+    </div>
+    
+
+    <script src="profilejs.js"></script>
+</body>
+</html>

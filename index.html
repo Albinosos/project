@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Метатеги для налаштування кодування та масштабування -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок сторінки -->
+    <title>Авторизація\Реєстрація</title>
+    <!-- Підключення бібліотеки jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Стилізація сторінки за допомогою CSS -->
+    <style>
+           /* Загальний стиль для всього документу */
+        body {
+            font-family: Arial, sans-serif;/* Використовувати шрифт Arial або аналогічний */
+            margin: 20px;/* Зовнішній відступ для тіла сторінки */
+            background-color: #f4f4f4;/* Колір тла сторінки */
+            justify-content: center;
+            align-items: center;
+            margin-top: 100px;
+      
+        }
+
+        /* Стилі для форми вводу */
+        form {
+            max-width: 300px;/* Максимальна ширина форми */
+            margin: 0 auto;/* Вирівнювання форми по центру */
+            background-color: #fff; /* Колір тла форми */
+            padding: 20px; /* Внутрішній відступ для форми */
+            border-radius: 8px;/* Закруглення кутів форми */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);/* Тінь для форми */
+            position: relative; /* Позиція форми для позиціонування помилок */
+            height: auto; /* Висота форми відносно висоти тіла сторінки */
+            transition: transform 0.3s ease-in-out;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Стилі для введення тексту */
+        input {
+            width: 100%;/* Ширина вводу тексту на 100% */
+            padding: 10px;/* Внутрішній відступ для вводу тексту */
+            margin-bottom: 25px;/* Зовнішній відступ від інших елементів */
+            box-sizing: border-box;/* Щоб padding та border враховувалися у загальній ширині */
+        }
+
+        /* Стилі для кнопки */
+        button {
+            background-color: #4CAF50;/* Колір фону кнопки */
+            color: white;/* Колір тексту кнопки */
+            padding: 10px 10px;/* Внутрішній відступ для кнопки */
+            border: none;/* Відсутність рамки для кнопки */
+            border-radius: 4px;/* Закруглення кутів кнопки */
+            cursor: pointer;/* Курсор, який вказує на можливість взаємодії */
+            width: 70px;
+            height: 40px;
+
+        }
+
+        /* Стилі для гіперпосилань */
+        a {
+            color: #4CAF50; /* Колір тексту гіперпосилань */
+            text-decoration: none;/* Відсутність підкреслення для гіперпосилань */
+        }
+
+        /* Стилі для наведення на гіперпосилання */
+        a:hover {
+            color: #30328c; /* колір тексту гіперпосилання при наведінні на нього */
+            text-decoration: underline;/* Підкреслення при наведенні на гіперпосилання */
+        }
+
+        /* Стилі для заголовків */
+        h1,
+        h2 {
+            margin-bottom: 25px;
+            text-align: center; /* Вирівнювання заголовків по центру */
+            color: #333;/* Колір тексту заголовків */
+        }
+
+        /* Стилі для абзаців */
+        p {
+            text-align: center; /* Вирівнювання абзаців по центру */
+            margin-top: 10px;/* Відступ зверху абзаців */
+        }
+
+        /* Стилі для відображення помилок */
+        .error-message {
+            color: red;/* Колір тексту для помилок */
+            margin-bottom: 0px;/* Відступ знизу для помилок */
+            position: absolute; /* Абсолютне позиціонування для точного розміщення */
+            left: 100px;
+            font-size: 14px ;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+
+
+
+    <!-- Заголовок сторінки -->
+    <h1 id="formTitle">Авторизуйтеся</h1>
+
+    <!-- Форма авторизації -->
+    <div id="authorizationForm">
+        
+        <!-- Форма для введення інформації для авторизації -->
+        <form id="loginForm">
+            <h2>Login</h2>
+            <!-- Поле для введення логіну -->
+            <label for="loginUsername">Username:</label>
+            <input type="text" id="loginUsername" name="loginUsername" required>
+            <!-- Поле для введення паролю -->
+            <label for="loginPassword">Password:</label>
+            <input type="password" id="loginPassword" name="loginPassword" required>
+            <!-- Виведення помилок під формою -->
+            <span class="error-message" id="loginError"></span>
+            <!-- Кнопка для відправки форми -->
+            <button type="submit" onclick="login()">Login</button>
+
+        </form>
+        <!-- Посилання на форму реєстрації -->
+        <p>Немає облікового запису? <a href="#" onclick="showRegistrationForm()">Зареєструватися тут.</a>.</p>
+    </div>
+
+
+
+    <!-- Форма реєстрації -->
+    <div id="registrationForm" style="display: none;">
+        
+        <!-- Форма для введення інформації для реєстрації -->
+        <form id="registerForm">
+            <h2>Register</h2>
+            <!-- Поле для введення імені користувача -->
+            <label for="registerUsername">Username:</label>
+            <input type="text" id="registerUsername" name="registerUsername" required>
+            <!-- Поле для введення електронної пошти -->
+            <label for="registerEmail">Email:</label>
+            <input type="email" id="registerEmail" name="registerEmail" required>
+            <!-- Поле для введення паролю -->
+            <label for="registerPassword">Password:</label>
+            <input type="password" id="registerPassword" name="registerPassword" minlength="8" required>
+            <!-- Виведення помилок паролю -->
+            <span class="error-message" id="passwordError"></span>
+            <!-- Кнопка для відправки форми -->
+            <button type="submit" onclick="register()">Register</button>
+            <!-- Додайте елемент для відображення тексту помилки для реєстрації -->
+            <span class="error-message" id="registrationError"></span>
+        </form>
+        <!-- Посилання на форму авторизації -->
+        <p>Уже маєте обліковий запис? <a href="#" onclick="showAuthorizationForm()">Увійдіть тут.</a>.</p>
+    </div>
+
+  
+    <script>
+        // Функція для відображення помилок
+        function displayErrors(errors, targetId) {
+            $("#" + targetId).text(errors);
+        }
+
+       // Функція для відображення форми реєстрації
+       function showRegistrationForm() {
+            $("#authorizationForm").fadeOut(300, function () {
+                $("#registrationForm").fadeIn(300);
+            });
+        }
+
+        // Функція для відображення форми авторизації
+        function showAuthorizationForm() {
+            $("#registrationForm").fadeOut(300, function () {
+                $("#authorizationForm").fadeIn(300);
+            });
+        }
+
+        // Функція для авторизації користувача
+        function login() {
+            event.preventDefault();
+            const username = $("#loginUsername").val();
+            const password = $("#loginPassword").val();
+
+            $.post("http://localhost:8080/login", { username, password }, function (response) {
+                
+                // Перенаправлення на іншу сторінку або виконання інших дій
+                if (response.message === 'Авторизація успішна') {
+                    console.log('Redirecting to profile.html');
+                    redirectToProfile();
+                }
+            }).fail(function (error) {
+                // Встановлення тексту помилки під формою авторизації
+                const errorMessage = JSON.parse(error.responseText).message;
+                displayErrors(errorMessage, "loginError");
+            });
+        }
+
+        // Функція для реєстрації користувача
+        function register() {
+            event.preventDefault();
+            const username = $("#registerUsername").val();
+            const email = $("#registerEmail").val();
+            const password = $("#registerPassword").val();
+
+            // Перевірка довжини паролю
+            if (password.length < 8) {
+                displayErrors("Пароль має бути не менше 8 символів.", "passwordError");
+                return;
+            } else {
+                displayErrors("", "passwordError");
+            }
+
+            // Відправка запиту на сервер для реєстрації
+            $.post("http://localhost:8080/register", { username, email, password })
+                .done(function (response) {
+                    if (response.message === 'Користувач успішно зареєстрований') {
+                        redirectToProfile();
+                    }
+                })
+                .fail(function (jqXHR) {
+                    const errorMessage = jqXHR.responseJSON.message;
+                    displayErrors(errorMessage, "registrationError");
+                });
+        }
+
+        // Функція для перенаправлення на сторінку профілю
+        function redirectToProfile() {
+            console.log('Redirecting to profile.html');
+            window.location.href = './profile.html';
+        }
+
+        // Додаємо обробники подій для кнопок форм
+        $("#loginForm").submit(login);
+        $("#registerForm").submit(register);
+
+// Функція для відображення форми реєстрації
+    function showRegistrationForm() {
+        $("#authorizationForm").fadeOut(300, function () {
+            $("#registrationForm").fadeIn(300);
+            $("#formTitle").text("Зареєструйтеся");
+        });
+    }
+
+    // Функція для відображення форми авторизації
+    function showAuthorizationForm() {
+        $("#registrationForm").fadeOut(300, function () {
+            $("#authorizationForm").fadeIn(300);
+            $("#formTitle").text("Авторизуйтеся");
+        });
+    }
+       
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+{
+  "dependencies": {
+    "ajax": "^0.0.4",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-mysql-session": "^3.0.0",
+    "express-session": "^1.17.3",
+    "fetch": "^1.1.0",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
+    "image-size": "^1.1.0",
+    "image-type": "^5.2.0",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "login": "^0.8.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.6.5",
+    "onclick": "^0.1.0",
+    "path": "^0.12.7",
+    "send": "^0.18.0",
+    "sequelize": "^6.35.1",
+    "uuid": "^9.0.1"
+  },
+  "name": "prob",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
